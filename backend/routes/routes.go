@@ -15,4 +15,9 @@ func SetupRoutes(r *gin.Engine) {
 	secured.Use(middlewares.JWTAuth())
 	secured.GET("/me", controllers.GetMe)
 	secured.POST("/me/role", controllers.UpdateRole)
+
+	secured.POST("/conferences", controllers.CreateConference)
+	secured.GET("/conferences", controllers.ListConferences)
+	secured.POST("/conferences/:id/join", controllers.JoinConference)
+	secured.GET("/me/conferences", controllers.ListMyConferences)
 }
