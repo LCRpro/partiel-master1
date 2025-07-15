@@ -59,6 +59,7 @@ func GoogleCallback(c *gin.Context) {
 		Email:    googleData.Email,
 		Name:     googleData.Name,
 		Picture:  googleData.Picture,
+		Roles:    `["user"]`,
 	}
 
 	var existing models.User

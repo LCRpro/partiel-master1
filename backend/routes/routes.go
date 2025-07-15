@@ -14,4 +14,5 @@ func SetupRoutes(r *gin.Engine) {
 	secured := r.Group("/")
 	secured.Use(middlewares.JWTAuth())
 	secured.GET("/me", controllers.GetMe)
+	secured.POST("/me/role", controllers.UpdateRole)
 }
