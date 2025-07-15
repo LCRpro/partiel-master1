@@ -1,15 +1,12 @@
-# NWS Conference – Installation & Démarrage Local
+# NWS Conference – Installation & Démarrage via Docker
 
-Ce projet est une web app de gestion de conférences (backend Go + frontend Vue 3).
+Ce projet est une web app de gestion de conférences (backend Go + frontend Vue 3), entièrement conteneurisée avec Docker.
 
 --------------------------------
 ## Prérequis
-```bash
-- Node.js >= 16.x  
-- npm >= 8.x ou yarn  
-- Go >= 1.20  
-- MAMP/XAMPP ou autre MySQL local
-```
+
+- Docker
+- Docker Compose
 
 --------------------------------
 ## 1. Cloner le dépôt
@@ -20,72 +17,46 @@ cd partiel-master1
 ```
 
 --------------------------------
-## 2. Backend (Go)
+## 2. Créer un fichier `.env`
 
-a) Aller dans le dossier backend
+Crée un fichier `.env` à la racine du projet avec les variables suivantes :
 
-```bash
-cd backend
-```
-
-b) Installer les dépendances Go
-
-```bash
-go mod tidy
-```
-c) Configuration des variables d'environnement
-
-Crée un fichier .env à la racine de backend/ avec le contenu fourni sur Classroom ou les votres directement :
-```bash
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-GOOGLE_REDIRECT_URL=
-JWT_SECRET=changemeplease
-DB_CONN=user:mdp@tcp(host:port)/nombdd
+```dotenv
+voir classroom
 ```
 
 
-d) Lancer le serveur backend
-```bash
-go run main.go
-```
-Le backend écoute sur http://localhost:8080
 
 --------------------------------
-## 3. Frontend (Vue 3)
+## 3. Démarrer les services
 
-a) Aller dans le dossier frontend
-```bash
-cd ../frontend
-```
-b) Installer les dépendances
-```bash
-npm install
+Depuis la racine du projet, lancez :
 
-```
-c) Lancer le serveur de développement
 ```bash
-npm run dev
-
+docker compose --env-file .env up --build
 ```
-Le frontend écoute sur http://localhost:5173
+
+Cela va :
+- Lancer MySQL sur le port 3306
+- Lancer le backend Go sur le port 8080
+- Lancer le frontend Vue 3 (Vite) sur le port 5173
 
 --------------------------------
 ## 4. Accès
-```bash
-- Frontend : http://localhost:5173  
-- Backend API : http://localhost:8080
-```
---------------------------------
-## 5. Tester
 
-Lances tes tests backend :
+- Frontend : http://localhost:5173  
+- Backend API : http://localhost:8080
+
+--------------------------------
+## 5. Lancer les tests backend
+
 ```bash
-go test -v ./controllers
+docker exec -it <nom_du_conteneur_backend> go test -v ./controllers
 ```
+
+Vous pouvez obtenir le nom exact avec `docker ps`.
+
 --------------------------------
 ✨ Auteur
 
 Liam Cariou
-
---------------------------------
