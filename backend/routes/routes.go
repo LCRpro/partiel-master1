@@ -24,5 +24,4 @@ func SetupRoutes(r *gin.Engine) {
 	secured.PATCH("/conferences/:id", controllers.UpdateConference)
 	secured.DELETE("/conferences/:id", controllers.DeleteConference)
 
-
 }

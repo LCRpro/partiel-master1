@@ -3,20 +3,16 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
-	"net/http"
-	"net/http/httptest"
-	"testing"
-	"strconv"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
+	"net/http"
+	"net/http/httptest"
+	"strconv"
+	"testing"
 
-
-	"partiel-master1/models"
 	"partiel-master1/config"
+	"partiel-master1/models"
 )
-
-
-
 
 func insertSpeaker() models.User {
 	user := models.User{
@@ -32,17 +28,14 @@ func insertSpeaker() models.User {
 
 func insertUser() models.User {
 	user := models.User{
-		GoogleID:    "fake-google-id-user",
-		Email:       "user@mail.com",
-		Name:        "User",
-		Roles:       `["user"]`,
+		GoogleID: "fake-google-id-user",
+		Email:    "user@mail.com",
+		Name:     "User",
+		Roles:    `["user"]`,
 	}
 	config.DB.Create(&user)
 	return user
 }
-
-
-
 
 func Test_isSpeaker(t *testing.T) {
 	assert.True(t, isSpeaker([]string{"user", "conferencier"}))

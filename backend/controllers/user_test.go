@@ -10,13 +10,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 
-	"partiel-master1/models"
 	"partiel-master1/config"
+	"partiel-master1/models"
 )
-
-
-
-
 
 func insertTestUser(email string, roles string) models.User {
 	user := models.User{

@@ -2,9 +2,9 @@ package controllers
 
 import (
 	"encoding/json"
-	"strconv"
 	"partiel-master1/config"
 	"partiel-master1/models"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -182,7 +182,6 @@ func ListConferenceParticipants(c *gin.Context) {
 	var user models.User
 	config.DB.Where("email = ?", email).First(&user)
 
-
 	var inscs []models.UserConference
 	config.DB.Where("conference_id = ?", conf.ID).Find(&inscs)
 	var userIDs []uint
@@ -198,74 +197,73 @@ func ListConferenceParticipants(c *gin.Context) {
 }
 
 func UpdateConference(c *gin.Context) {
-    id := c.Param("id")
+	id := c.Param("id")
 
-    emailAny, exists := c.Get("email")
-    if !exists {
-        c.JSON(401, gin.H{"error": "Non authentifié"})
-        return
-    }
-    email := emailAny.(string)
-    var user models.User
-    config.DB.Where("email = ?", email).First(&user)
+	emailAny, exists := c.Get("email")
+	if !exists {
+		c.JSON(401, gin.H{"error": "Non authentifié"})
+		return
+	}
+	email := emailAny.(string)
+	var user models.User
+	config.DB.Where("email = ?", email).First(&user)
 
-    var conf models.Conference
-    result := config.DB.First(&conf, id)
-    if result.Error != nil {
-        c.JSON(404, gin.H{"error": "Conférence non trouvée"})
-        return
-    }
-    if conf.OrganizerID != user.ID {
-        c.JSON(403, gin.H{"error": "Seul l'organisateur peut modifier"})
-        return
-    }
+	var conf models.Conference
+	result := config.DB.First(&conf, id)
+	if result.Error != nil {
+		c.JSON(404, gin.H{"error": "Conférence non trouvée"})
+		return
+	}
+	if conf.OrganizerID != user.ID {
+		c.JSON(403, gin.H{"error": "Seul l'organisateur peut modifier"})
+		return
+	}
 
-    var req struct {
-        Title       *string `json:"Title"`
-        Description *string `json:"Description"`
-    }
-    if err := c.ShouldBindJSON(&req); err != nil {
-        c.JSON(400, gin.H{"error": "Données invalides"})
-        return
-    }
+	var req struct {
+		Title       *string `json:"Title"`
+		Description *string `json:"Description"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{"error": "Données invalides"})
+		return
+	}
 
-    if req.Title != nil {
-        conf.Title = *req.Title
-    }
-    if req.Description != nil {
-        conf.Description = *req.Description
-    }
+	if req.Title != nil {
+		conf.Title = *req.Title
+	}
+	if req.Description != nil {
+		conf.Description = *req.Description
+	}
 
-    config.DB.Save(&conf)
-    c.JSON(200, conf)
+	config.DB.Save(&conf)
+	c.JSON(200, conf)
 }
 
-
 func DeleteConference(c *gin.Context) {
-    id := c.Param("id")
+	id := c.Param("id")
 
-    emailAny, exists := c.Get("email")
-    if !exists {
-        c.JSON(401, gin.H{"error": "Non authentifié"})
-        return
-    }
-    email := emailAny.(string)
-    var user models.User
-    config.DB.Where("email = ?", email).First(&user)
+	emailAny, exists := c.Get("email")
+	if !exists {
+		c.JSON(401, gin.H{"error": "Non authentifié"})
+		return
+	}
+	email := emailAny.(string)
+	var user models.User
+	config.DB.Where("email = ?", email).First(&user)
 
-    var conf models.Conference
-    result := config.DB.First(&conf, id)
-    if result.Error != nil {
-        c.JSON(404, gin.H{"error": "Conférence non trouvée"})
-        return
-    }
-    if conf.OrganizerID != user.ID {
-        c.JSON(403, gin.H{"error": "Seul l'organisateur peut supprimer"})
-        return
-    }
+	var conf models.Conference
+	result := config.DB.First(&conf, id)
+	if result.Error != nil {
+		c.JSON(404, gin.H{"error": "Conférence non trouvée"})
+		return
+	}
+	if conf.OrganizerID != user.ID {
+		c.JSON(403, gin.H{"error": "Seul l'organisateur peut supprimer"})
+		return
+	}
 
-    config.DB.Where("conference_id = ?", conf.ID).Delete(&models.UserConference{})
-    config.DB.Delete(&conf)
+	config.DB.Where("conference_id = ?", conf.ID).Delete(&models.UserConference{})
+	config.DB.Delete(&conf)
 
-    c.JSON(200, gin.H{"message": "Conférence supprimée"})
+	c.JSON(200, gin.H{"message": "Conférence supprimée"})
 }

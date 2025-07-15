@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"partiel-master1/config"
-	"partiel-master1/models"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"partiel-master1/config"
+	"partiel-master1/models"
 )
 
 func GetMe(c *gin.Context) {
@@ -24,8 +24,6 @@ func GetMe(c *gin.Context) {
 
 	c.JSON(200, user)
 }
-
-
 
 func UpdateRole(c *gin.Context) {
 	emailAny, exists := c.Get("email")
@@ -79,4 +77,3 @@ func UpdateRole(c *gin.Context) {
 		"token": jwtToken,
 	})
 }
-

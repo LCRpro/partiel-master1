@@ -18,7 +18,7 @@ import (
 )
 
 type GoogleResponse struct {
-	ID      string `json:"id"`       
+	ID      string `json:"id"`
 	Email   string `json:"email"`
 	Name    string `json:"name"`
 	Picture string `json:"picture"`
@@ -55,7 +55,7 @@ func GoogleCallback(c *gin.Context) {
 	}
 
 	user := models.User{
-		GoogleID: googleData.ID,        
+		GoogleID: googleData.ID,
 		Email:    googleData.Email,
 		Name:     googleData.Name,
 		Picture:  googleData.Picture,
@@ -71,7 +71,7 @@ func GoogleCallback(c *gin.Context) {
 			return
 		}
 	} else {
-		user = existing 
+		user = existing
 	}
 
 	jwtToken, _ := generateJWT(user.Email)
