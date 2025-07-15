@@ -36,9 +36,10 @@ func UpdateRole(c *gin.Context) {
 	email := emailAny.(string)
 
 	var req struct {
-		NewRole string `json:"role"` 
+		NewRole     string `json:"role"`
+		SpeakerName string `json:"speakerName"`
 	}
-	if err := c.ShouldBindJSON(&req); err != nil || (req.NewRole != "admin" && req.NewRole != "organisateur") {
+	if err := c.ShouldBindJSON(&req); err != nil || (req.NewRole != "admin" && req.NewRole != "organisateur" && req.NewRole != "conferencier") {
 		c.JSON(400, gin.H{"error": "Role invalide"})
 		return
 	}
@@ -64,11 +65,18 @@ func UpdateRole(c *gin.Context) {
 	if !found {
 		roles = append(roles, req.NewRole)
 	}
-
+	if req.NewRole == "conferencier" && req.SpeakerName != "" {
+		user.SpeakerName = req.SpeakerName
+	}
 	rolesJSON, _ := json.Marshal(roles)
 	user.Roles = string(rolesJSON)
 	config.DB.Save(&user)
 
-	c.JSON(200, user)
+	jwtToken, _ := generateJWT(user.Email)
+
+	c.JSON(200, gin.H{
+		"user":  user,
+		"token": jwtToken,
+	})
 }
 
