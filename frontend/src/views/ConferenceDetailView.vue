@@ -1,8 +1,6 @@
 <template>
-  <div
-    v-if="conf"
-    class="bg-gradient-to-br from-blue-950 via-gray-900 to-gray-900 rounded-3xl shadow-2xl p-10 max-w-2xl mx-auto my-12 border border-blue-800/60"
-  >
+  <div v-if="conf"
+    class="bg-gradient-to-br from-blue-950 via-gray-900 to-gray-900 rounded-3xl shadow-2xl p-10 max-w-2xl mx-auto my-12 border border-blue-800/60">
     <div class="flex flex-col sm:flex-row items-start sm:items-center gap-7 mb-8">
       <div class="flex-1 min-w-0">
         <h1 class="text-3xl sm:text-4xl font-black text-white mb-2 tracking-tight drop-shadow">
@@ -16,12 +14,13 @@
         <div class="flex gap-4 items-center text-gray-400 mb-1 text-sm">
           <span class="flex items-center gap-2">
             <span>Salle</span>
-            <span class="inline-block px-3 py-0.5 bg-blue-900/70 border border-blue-700 rounded-lg font-bold text-blue-200 text-base">
+            <span
+              class="inline-block px-3 py-0.5 bg-blue-900/70 border border-blue-700 rounded-lg font-bold text-blue-200 text-base">
               {{ conf.Room }}
             </span>
           </span>
           <span class="pl-4 border-l border-gray-600 font-mono text-xs">
-            Conférencier : 
+            Conférencier :
             <span class="text-green-400 font-semibold">{{ conf.SpeakerName }}</span>
           </span>
         </div>
@@ -32,10 +31,8 @@
           {{ participants.length }} <span class="text-gray-500 text-lg">/ 20</span>
         </div>
         <div v-if="isOwner" class="mt-2">
-          <button
-            @click="showUsers = true"
-            class="text-blue-300 hover:text-white font-semibold text-xs underline transition"
-          >Voir la liste</button>
+          <button @click="showUsers = true"
+            class="text-blue-300 hover:text-white font-semibold text-xs underline transition">Voir la liste</button>
         </div>
       </div>
     </div>
@@ -46,12 +43,8 @@
     </div>
 
     <div class="mb-1">
-      <button
-        v-if="!isOwner"
-        @click="register"
-        :disabled="registered || full"
-        class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold px-7 py-2 rounded-xl shadow-lg transition disabled:opacity-40 disabled:cursor-not-allowed"
-      >
+      <button v-if="!isOwner" @click="register" :disabled="registered || full"
+        class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold px-7 py-2 rounded-xl shadow-lg transition disabled:opacity-40 disabled:cursor-not-allowed">
         {{ registered ? 'Déjà inscrit' : (full ? 'Complet' : "S'inscrire à cette conférence") }}
       </button>
     </div>
@@ -60,14 +53,12 @@
 
     <div v-if="showUsers" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
       <div class="bg-gray-900 border border-blue-700 rounded-2xl shadow-2xl p-7 w-full max-w-xs text-left relative">
-        <button class="absolute top-3 right-4 text-2xl text-gray-500 hover:text-white" @click="showUsers = false">&times;</button>
+        <button class="absolute top-3 right-4 text-2xl text-gray-500 hover:text-white"
+          @click="showUsers = false">&times;</button>
         <div class="mb-3 text-lg text-blue-300 font-bold">Participants inscrits</div>
         <ul>
-          <li
-            v-for="u in participants"
-            :key="u.ID || u.id"
-            class="py-1.5 px-2 rounded text-gray-100 font-mono text-[15px] border-b border-blue-900 last:border-b-0"
-          >
+          <li v-for="u in participants" :key="u.ID || u.id"
+            class="py-1.5 px-2 rounded text-gray-100 font-mono text-[15px] border-b border-blue-900 last:border-b-0">
             <span class="text-blue-400 font-bold">{{ u.Name || u.name || u.Email || u.email }}</span>
           </li>
         </ul>

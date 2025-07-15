@@ -5,45 +5,25 @@
         <router-link to="/home" class="flex items-center space-x-2 group">
           <span class="text-2xl font-bold text-blue-400 group-hover:text-blue-300 transition">NWS Conference</span>
         </router-link>
-        <router-link
-          to="/home"
-          class="hover:text-blue-400 font-medium px-3 py-1 rounded transition"
-        >Accueil</router-link>
-        <router-link
-          v-if="isLogged"
-          to="/conferences"
-          class="hover:text-blue-400 font-medium px-3 py-1 rounded transition"
-        >Conférences</router-link>
-       <router-link
-  v-if="isLogged && isSpeaker"
-  to="/mes-conferences"
-  class="hover:text-blue-400 font-medium px-3 py-1 rounded transition"
->Mes conférences</router-link>
+        <router-link to="/home"
+          class="hover:text-blue-400 font-medium px-3 py-1 rounded transition">Accueil</router-link>
+        <router-link v-if="isLogged" to="/conferences"
+          class="hover:text-blue-400 font-medium px-3 py-1 rounded transition">Conférences</router-link>
+        <router-link v-if="isLogged && isSpeaker" to="/mes-conferences"
+          class="hover:text-blue-400 font-medium px-3 py-1 rounded transition">Mes conférences</router-link>
 
-        <router-link
-          v-if="isLogged"
-          to="/me"
-          class="hover:text-blue-400 font-medium px-3 py-1 rounded transition"
-        >Mon Profil</router-link>
-              <router-link
-  v-if="isLogged && isAdmin"
-  to="/admin"
-  class="hover:text-blue-400 font-medium px-3 py-1 rounded transition"
->Admin</router-link>
+        <router-link v-if="isLogged" to="/me" class="hover:text-blue-400 font-medium px-3 py-1 rounded transition">Mon
+          Profil</router-link>
+        <router-link v-if="isLogged && isAdmin" to="/admin"
+          class="hover:text-blue-400 font-medium px-3 py-1 rounded transition">Admin</router-link>
       </div>
 
 
       <div>
-        <button
-          v-if="!isLogged"
-          @click="loginWithGoogle"
-          class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow transition"
-        >Connexion</button>
-        <button
-          v-else
-          @click="logout"
-          class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition"
-        >Déconnexion</button>
+        <button v-if="!isLogged" @click="loginWithGoogle"
+          class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow transition">Connexion</button>
+        <button v-else @click="logout"
+          class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition">Déconnexion</button>
       </div>
     </nav>
     <main class="container mx-auto py-8 px-4">

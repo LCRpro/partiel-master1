@@ -4,8 +4,8 @@
 
     <div v-if="loading" class="text-gray-400 text-lg flex items-center gap-2">
       <svg class="animate-spin w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
       </svg>
       Chargement…
     </div>
@@ -23,7 +23,8 @@
         </span>
       </div>
       <div v-else class="overflow-x-auto">
-        <table class="w-full rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br from-gray-800 via-gray-900 to-gray-800">
+        <table
+          class="w-full rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br from-gray-800 via-gray-900 to-gray-800">
           <thead>
             <tr class="bg-gradient-to-r from-blue-900 via-gray-800 to-blue-800 text-blue-100">
               <th class="px-5 py-4 text-left font-bold">Titre</th>
@@ -46,60 +47,50 @@
               <td class="px-4 py-4">
                 <div class="flex items-center gap-3 min-w-[160px]">
                   <div class="relative w-36 h-2 bg-gray-600 rounded">
-                    <div
-                      class="h-2 rounded absolute left-0 top-0 transition-all"
-                      :class="[
-                        percent(conf) >= 100 ? 'bg-green-500' :
+                    <div class="h-2 rounded absolute left-0 top-0 transition-all" :class="[
+                      percent(conf) >= 100 ? 'bg-green-500' :
                         percent(conf) >= 75 ? 'bg-lime-400' :
-                        percent(conf) >= 50 ? 'bg-yellow-400' :
-                        percent(conf) >= 25 ? 'bg-orange-400' :
-                        'bg-red-500'
-                      ]"
-                      :style="{ width: percent(conf) + '%' }"
-                    ></div>
+                          percent(conf) >= 50 ? 'bg-yellow-400' :
+                            percent(conf) >= 25 ? 'bg-orange-400' :
+                              'bg-red-500'
+                    ]" :style="{ width: percent(conf) + '%' }"></div>
                   </div>
-                  <span
-                    :class="[
-                      'ml-2 text-xs font-bold rounded px-2 py-0.5',
-                      percent(conf) >= 100 ? 'bg-green-700 text-white' :
+                  <span :class="[
+                    'ml-2 text-xs font-bold rounded px-2 py-0.5',
+                    percent(conf) >= 100 ? 'bg-green-700 text-white' :
                       percent(conf) >= 75 ? 'bg-lime-700 text-white' :
-                      percent(conf) >= 50 ? 'bg-yellow-700 text-yellow-100' :
-                      percent(conf) >= 25 ? 'bg-orange-700 text-white' :
-                      'bg-red-700 text-white'
-                    ]"
-                  >
+                        percent(conf) >= 50 ? 'bg-yellow-700 text-yellow-100' :
+                          percent(conf) >= 25 ? 'bg-orange-700 text-white' :
+                            'bg-red-700 text-white'
+                  ]">
                     {{ percent(conf) }}%
                   </span>
                 </div>
               </td>
               <td class="px-4 py-4 flex gap-2 flex-wrap items-center">
-                <router-link
-                  :to="`/conferences/${conf.ID || conf.id}`"
+                <router-link :to="`/conferences/${conf.ID || conf.id}`"
                   class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1.5 rounded shadow text-xs font-semibold transition"
-                  title="Détails"
-                >
+                  title="Détails">
                   <svg class="inline w-4 h-4 mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-width="2" d="M15 12l-4-4m0 0l4-4m-4 4h14"/>
+                    <path stroke="currentColor" stroke-width="2" d="M15 12l-4-4m0 0l4-4m-4 4h14" />
                   </svg>
                   Détails
                 </router-link>
-                <button
-                  @click="openEdit(conf)"
+                <button @click="openEdit(conf)"
                   class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1.5 rounded shadow text-xs font-semibold transition"
-                  title="Modifier"
-                >
+                  title="Modifier">
                   <svg class="inline w-4 h-4 mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-width="2" d="M15.232 5.232l3.536 3.536M7.5 18.5l2.964-.741c.295-.074.574-.236.785-.447l8.486-8.486a1.5 1.5 0 000-2.121l-3.536-3.535a1.5 1.5 0 00-2.121 0l-8.486 8.485a1.5 1.5 0 00-.447.786L5.5 16.5a1 1 0 001 1z"/>
+                    <path stroke="currentColor" stroke-width="2"
+                      d="M15.232 5.232l3.536 3.536M7.5 18.5l2.964-.741c.295-.074.574-.236.785-.447l8.486-8.486a1.5 1.5 0 000-2.121l-3.536-3.535a1.5 1.5 0 00-2.121 0l-8.486 8.485a1.5 1.5 0 00-.447.786L5.5 16.5a1 1 0 001 1z" />
                   </svg>
                   Modifier
                 </button>
-                <button
-                  @click="confirmDelete(conf)"
+                <button @click="confirmDelete(conf)"
                   class="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded shadow text-xs font-semibold transition"
-                  title="Supprimer"
-                >
+                  title="Supprimer">
                   <svg class="inline w-4 h-4 mr-1 -mt-0.5" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-width="2" d="M6 7h12M9 7v10a2 2 0 002 2h2a2 2 0 002-2V7m5 0V5a2 2 0 00-2-2H7a2 2 0 00-2 2v2"/>
+                    <path stroke="currentColor" stroke-width="2"
+                      d="M6 7h12M9 7v10a2 2 0 002 2h2a2 2 0 002-2V7m5 0V5a2 2 0 00-2-2H7a2 2 0 00-2 2v2" />
                   </svg>
                   Supprimer
                 </button>
@@ -112,22 +103,16 @@
 
     <div v-if="modalEdit" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
       <div class="bg-gray-900 p-10 rounded-2xl w-full max-w-lg shadow-2xl relative">
-        <button class="absolute right-5 top-4 text-gray-500 text-2xl hover:text-blue-400" @click="closeEdit">&times;</button>
+        <button class="absolute right-5 top-4 text-gray-500 text-2xl hover:text-blue-400"
+          @click="closeEdit">&times;</button>
         <h2 class="text-2xl font-bold text-blue-400 mb-6">Modifier la conférence</h2>
         <form @submit.prevent="saveEdit" class="space-y-6">
-          <input
-            v-model="editForm.Title"
-            placeholder="Titre"
-            required
-            class="w-full px-4 py-2 rounded-xl border border-blue-700 bg-gray-800 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-          <textarea
-            v-model="editForm.Description"
-            placeholder="Description"
-            required
-            class="w-full px-4 py-2 rounded-xl border border-blue-700 bg-gray-800 text-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-400"
-          ></textarea>
-          <button class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-xl w-full text-lg font-bold mt-2 transition">
+          <input v-model="editForm.Title" placeholder="Titre" required
+            class="w-full px-4 py-2 rounded-xl border border-blue-700 bg-gray-800 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          <textarea v-model="editForm.Description" placeholder="Description" required
+            class="w-full px-4 py-2 rounded-xl border border-blue-700 bg-gray-800 text-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+          <button
+            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-xl w-full text-lg font-bold mt-2 transition">
             Enregistrer
           </button>
         </form>
@@ -142,8 +127,10 @@
           <span class="text-blue-300 font-bold">{{ deleteTarget?.Title }}</span> ?
         </div>
         <div class="flex gap-4 justify-center mb-2">
-          <button @click="doDelete" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-bold shadow">Oui</button>
-          <button @click="closeDelete" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg shadow">Annuler</button>
+          <button @click="doDelete"
+            class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-bold shadow">Oui</button>
+          <button @click="closeDelete"
+            class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg shadow">Annuler</button>
         </div>
         <div v-if="deleteError" class="text-red-400 mt-2">{{ deleteError }}</div>
       </div>

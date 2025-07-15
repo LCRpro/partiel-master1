@@ -4,37 +4,31 @@
       <h1 class="text-3xl font-extrabold text-blue-300 tracking-tight drop-shadow">
         Liste des conférences
       </h1>
-      <button
-        v-if="isSpeaker"
-        @click="openModal"
-        class="bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold px-6 py-2 rounded-xl shadow-xl transition"
-      >
+      <button v-if="isSpeaker" @click="openModal"
+        class="bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold px-6 py-2 rounded-xl shadow-xl transition">
         + Nouvelle conférence
       </button>
     </div>
 
-    <div class="bg-blue-950/90 text-blue-200 text-xs font-bold rounded-lg px-4 py-2 mb-6 shadow border-l-4 border-blue-600 w-fit">
+    <div
+      class="bg-blue-950/90 text-blue-200 text-xs font-bold rounded-lg px-4 py-2 mb-6 shadow border-l-4 border-blue-600 w-fit">
       Salon du 18/07 au 20/07 • 10 salles • Créneaux d'1h
     </div>
 
     <div class="flex items-center mb-10 gap-2">
       <label class="text-gray-400 font-semibold mr-4 text-base">Filtrer par jour :</label>
-      <button
-        v-for="d in days"
-        :key="d.value"
-        @click="selectedDay = d.value"
-        :class="[
-          'px-5 py-2 rounded-full font-mono font-semibold transition border shadow-sm',
-          selectedDay === d.value
-            ? 'bg-gradient-to-r from-blue-600 to-blue-400 text-white border-blue-700 scale-105'
-            : 'bg-gray-800 text-gray-200 border-gray-700 hover:bg-blue-900/80 hover:text-white'
-        ]"
-      >{{ d.label }}</button>
+      <button v-for="d in days" :key="d.value" @click="selectedDay = d.value" :class="[
+        'px-5 py-2 rounded-full font-mono font-semibold transition border shadow-sm',
+        selectedDay === d.value
+          ? 'bg-gradient-to-r from-blue-600 to-blue-400 text-white border-blue-700 scale-105'
+          : 'bg-gray-800 text-gray-200 border-gray-700 hover:bg-blue-900/80 hover:text-white'
+      ]">{{ d.label }}</button>
     </div>
 
     <div v-if="loading" class="text-gray-300 text-lg py-12 text-center">Chargement…</div>
 
-    <div v-else-if="Array.isArray(filteredConfs) && filteredConfs.length === 0" class="text-gray-400 text-lg italic text-center py-8">
+    <div v-else-if="Array.isArray(filteredConfs) && filteredConfs.length === 0"
+      class="text-gray-400 text-lg italic text-center py-8">
       <span class="inline-block bg-gray-700/60 px-4 py-2 rounded-xl">
         Aucune conférence programmée pour ce jour.
       </span>
@@ -43,7 +37,8 @@
     <div v-else class="grid md:grid-cols-2 gap-10">
       <div v-for="room in 10" :key="room" class="mb-10">
         <h2 class="text-blue-400 text-xl font-bold mb-3 flex items-center gap-2">
-          <span class="inline-flex items-center justify-center w-7 h-7 bg-blue-950 rounded-full border-2 border-blue-600 text-blue-200 text-lg font-extrabold shadow">
+          <span
+            class="inline-flex items-center justify-center w-7 h-7 bg-blue-950 rounded-full border-2 border-blue-600 text-blue-200 text-lg font-extrabold shadow">
             {{ room }}
           </span>
           <span>Salle {{ room }}</span>
@@ -60,12 +55,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="conf in filteredConfs.filter(c => c.Room == room)"
-                :key="conf.ID || conf.id"
-                :class="rowClass(conf)"
-                class="transition duration-150"
-              >
+              <tr v-for="conf in filteredConfs.filter(c => c.Room == room)" :key="conf.ID || conf.id"
+                :class="rowClass(conf)" class="transition duration-150">
                 <td class="px-3 py-3 font-semibold">
                   <span :class="{ 'line-through text-gray-500': isPast(conf), 'text-white': !isPast(conf) }">
                     {{ conf.Title }}
@@ -87,10 +78,8 @@
                   </span>
                 </td>
                 <td class="px-3 py-3">
-                  <router-link
-                    :to="`/conferences/${conf.ID || conf.id}`"
-                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded shadow font-bold text-xs transition"
-                  >Détails</router-link>
+                  <router-link :to="`/conferences/${conf.ID || conf.id}`"
+                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded shadow font-bold text-xs transition">Détails</router-link>
                 </td>
               </tr>
               <tr v-if="filteredConfs.filter(c => c.Room == room).length === 0">
@@ -109,47 +98,36 @@
         <button class="absolute right-4 top-4 text-gray-400 text-2xl" @click="closeModal">&times;</button>
         <h2 class="text-2xl font-bold text-blue-400 mb-5">Nouvelle conférence</h2>
         <form @submit.prevent="createConference" class="space-y-5">
-          <input
-            v-model="form.Title"
-            placeholder="Titre"
-            required
-            class="w-full px-4 py-2 rounded-lg border border-blue-700 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 font-semibold text-lg"
-          />
-          <textarea
-            v-model="form.Description"
-            placeholder="Description"
-            required
+          <input v-model="form.Title" placeholder="Titre" required
+            class="w-full px-4 py-2 rounded-lg border border-blue-700 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 font-semibold text-lg" />
+          <textarea v-model="form.Description" placeholder="Description" required
             class="w-full px-4 py-2 rounded-lg border border-blue-700 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 font-semibold"
-            rows="2"
-          ></textarea>
+            rows="2"></textarea>
           <div class="flex gap-3 items-center">
             <label class="text-gray-300 font-semibold">Jour :</label>
-            <select v-model="selectedDay" class="px-2 py-2 rounded border border-green-700 bg-gray-800 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-green-400 transition" required>
+            <select v-model="selectedDay"
+              class="px-2 py-2 rounded border border-green-700 bg-gray-800 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-green-400 transition"
+              required>
               <option v-for="(day, idx) in days" :key="idx" :value="day.value">{{ day.label }}</option>
             </select>
             <label class="ml-4 text-gray-300 font-semibold">Salle :</label>
-            <select v-model="form.Room" class="px-2 py-2 rounded border border-green-700 bg-gray-800 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-green-400 transition" required>
+            <select v-model="form.Room"
+              class="px-2 py-2 rounded border border-green-700 bg-gray-800 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-green-400 transition"
+              required>
               <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
             </select>
           </div>
           <div>
             <div class="mb-1 text-gray-400">Créneaux horaires disponibles (1h)</div>
             <div class="grid grid-cols-3 gap-2">
-              <button
-                v-for="(slot, idx) in availableSlots"
-                :key="slot.value"
-                type="button"
-                :class="[
-                  'px-3 py-2 rounded-lg border font-mono font-semibold transition',
-                  slot.disabled
-                    ? 'bg-gray-800 border-gray-800 text-gray-500 cursor-not-allowed'
-                    : selectedSlots.includes(idx)
-                      ? 'bg-blue-500 border-blue-700 text-white font-bold shadow-lg'
-                      : 'bg-gray-700 border-gray-600 text-gray-200 hover:bg-blue-800 hover:text-white'
-                ]"
-                :disabled="slot.disabled"
-                @click="toggleSlot(idx)"
-              >
+              <button v-for="(slot, idx) in availableSlots" :key="slot.value" type="button" :class="[
+                'px-3 py-2 rounded-lg border font-mono font-semibold transition',
+                slot.disabled
+                  ? 'bg-gray-800 border-gray-800 text-gray-500 cursor-not-allowed'
+                  : selectedSlots.includes(idx)
+                    ? 'bg-blue-500 border-blue-700 text-white font-bold shadow-lg'
+                    : 'bg-gray-700 border-gray-600 text-gray-200 hover:bg-blue-800 hover:text-white'
+              ]" :disabled="slot.disabled" @click="toggleSlot(idx)">
                 {{ slot.label }}
               </button>
             </div>
@@ -158,7 +136,8 @@
             <label class="text-gray-400">Organisateur :</label>
             <span class="ml-2 text-blue-400 font-semibold">{{ connectedName }}</span>
           </div>
-          <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl w-full mt-3 shadow font-semibold" type="submit">
+          <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl w-full mt-3 shadow font-semibold"
+            type="submit">
             Créer
           </button>
         </form>

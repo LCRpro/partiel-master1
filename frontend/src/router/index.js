@@ -10,21 +10,12 @@ import AdminView from '../views/AdminView.vue'
 const routes = [
   { path: '/', redirect: '/home' },
   { path: '/login', name: 'Login', component: LoginView },
-  {
-    path: '/home',
-    name: 'Home',
-    component: HomeView  },
+  { path: '/home', name: 'Home', component: HomeView },
   { path: '/me', name: 'Me', component: MeView, meta: { requiresAuth: true } },
   { path: '/conferences', name: 'Conferences', component: ConferencesView, meta: { requiresAuth: true } },
   { path: '/conferences/:id', name: 'ConferenceDetail', component: ConferenceDetailView, props: true, meta: { requiresAuth: true } },
   { path: '/mes-conferences', name: 'MesConferences', component: MesConferencesView, meta: { requiresAuth: true } },
-{ 
-  path: '/admin', 
-  name: 'Admin', 
-  component: AdminView, 
-  meta: { requiresAuth: true, requiresAdmin: true } 
-},
-
+  { path: '/admin', name: 'Admin', component: AdminView, meta: { requiresAuth: true, requiresAdmin: true } },
 ]
 
 const router = createRouter({
