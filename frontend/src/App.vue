@@ -10,9 +10,15 @@
           class="hover:text-blue-400 font-medium px-3 py-1 rounded transition"
         >Accueil</router-link>
         <router-link
+          v-if="isLogged"
           to="/conferences"
           class="hover:text-blue-400 font-medium px-3 py-1 rounded transition"
         >Conférences</router-link>
+           <router-link
+          v-if="isLogged"
+          to="/mes-conferences"
+          class="hover:text-blue-400 font-medium px-3 py-1 rounded transition"
+        >Mes conférences</router-link>
         <router-link
           v-if="isLogged"
           to="/me"
