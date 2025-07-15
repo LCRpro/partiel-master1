@@ -1,5 +1,17 @@
 <template>
-  <router-view />
+  <div>
+    <nav class="bg-gray-900 text-white px-6 py-3 flex items-center justify-between shadow">
+      <div class="flex items-center space-x-4">
+        <span class="font-bold text-xl text-blue-400">NWS Conference</span>
+        <router-link to="/home" class="hover:text-blue-400 px-3 py-2 rounded">Accueil</router-link>
+        <router-link to="/me" class="hover:text-blue-400 px-3 py-2 rounded">Mon Profil</router-link>
+        <router-link to="/login" class="hover:text-blue-400 px-3 py-2 rounded">Déconnexion</router-link>
+      </div>
+    </nav>
+    <main class="container mx-auto p-6">
+      <router-view />
+    </main>
+  </div>
 </template>
 
 <script>

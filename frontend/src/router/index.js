@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 import HomeView from '../views/HomeView.vue'
+import MeView from '../views/MeView.vue'
+
 
 const routes = [
   { path: '/', redirect: '/home' },
@@ -10,7 +12,9 @@ const routes = [
     name: 'Home',
     component: HomeView,
     meta: { requiresAuth: true }
-  }
+  },
+  { path: '/me', name: 'Me', component: MeView, meta: { requiresAuth: true } }
+
 ]
 
 const router = createRouter({
