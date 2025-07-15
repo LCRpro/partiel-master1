@@ -49,37 +49,54 @@
                 @click="openEdit(conf)"
                 class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-xs"
               >Modifier</button>
+              <button
+                @click="confirmDelete(conf)"
+                class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs"
+              >Supprimer</button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-<div v-if="modalEdit" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-  <div class="bg-gray-900 p-8 rounded-xl w-full max-w-lg shadow-2xl relative">
-    <button class="absolute right-4 top-3 text-gray-400 text-xl" @click="closeEdit">&times;</button>
-    <h2 class="text-xl font-bold text-blue-400 mb-4">Modifier la conférence</h2>
-    <form @submit.prevent="saveEdit" class="space-y-4">
-      <input
-        v-model="editForm.Title"
-        placeholder="Titre"
-        required
-        class="w-full px-3 py-2 rounded border border-blue-700 bg-gray-800 text-white"
-      />
-      <textarea
-        v-model="editForm.Description"
-        placeholder="Description"
-        required
-        class="w-full px-3 py-2 rounded border border-blue-700 bg-gray-800 text-white"
-      ></textarea>
-      <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded w-full mt-2" type="submit">
-        Enregistrer
-      </button>
-    </form>
-    <div v-if="editError" class="text-red-500 mt-2">{{ editError }}</div>
-  </div>
-</div>
+    <div v-if="modalEdit" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div class="bg-gray-900 p-8 rounded-xl w-full max-w-lg shadow-2xl relative">
+        <button class="absolute right-4 top-3 text-gray-400 text-xl" @click="closeEdit">&times;</button>
+        <h2 class="text-xl font-bold text-blue-400 mb-4">Modifier la conférence</h2>
+        <form @submit.prevent="saveEdit" class="space-y-4">
+          <input
+            v-model="editForm.Title"
+            placeholder="Titre"
+            required
+            class="w-full px-3 py-2 rounded border border-blue-700 bg-gray-800 text-white"
+          />
+          <textarea
+            v-model="editForm.Description"
+            placeholder="Description"
+            required
+            class="w-full px-3 py-2 rounded border border-blue-700 bg-gray-800 text-white"
+          ></textarea>
+          <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded w-full mt-2" type="submit">
+            Enregistrer
+          </button>
+        </form>
+        <div v-if="editError" class="text-red-500 mt-2">{{ editError }}</div>
+      </div>
+    </div>
 
+    <div v-if="modalDelete" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+      <div class="bg-gray-900 p-8 rounded-xl shadow-xl w-full max-w-xs text-center">
+        <div class="text-lg text-white mb-6">
+          Supprimer la conférence<br>
+          <span class="text-blue-300 font-bold">{{ deleteTarget?.Title }}</span> ?
+        </div>
+        <div class="flex gap-4 justify-center">
+          <button @click="doDelete" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow">Oui</button>
+          <button @click="closeDelete" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded shadow">Annuler</button>
+        </div>
+        <div v-if="deleteError" class="text-red-400 mt-3">{{ deleteError }}</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -93,12 +110,14 @@ export default {
       myConfs: [],
       user: null,
       modalEdit: false,
-      editForm: { ID: null, Title: "", Description: "", Room: 1 },
-      editError: ""
+      editForm: { ID: null, Title: "", Description: "" },
+      editError: "",
+      modalDelete: false,
+      deleteTarget: null,
+      deleteError: ""
     }
   },
   async mounted() {
-    const token = localStorage.getItem('token')
     const userStr = localStorage.getItem('user')
     if (!userStr) {
       this.loading = false
@@ -136,32 +155,57 @@ export default {
       const count = conf.ParticipantCount || 0
       return Math.round((count / 20) * 100)
     },
-openEdit(conf) {
-  this.editError = ""
-  this.editForm = {
-    ID: conf.ID || conf.id,
-    Title: conf.Title,
-    Description: conf.Description
-  }
-  this.modalEdit = true
-},
-async saveEdit() {
-  this.editError = ""
-  const token = localStorage.getItem('token')
-  try {
-    await axios.patch(`http://localhost:8080/conferences/${this.editForm.ID}`, {
-      Title: this.editForm.Title,
-      Description: this.editForm.Description
-    }, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-    this.modalEdit = false
-    await this.loadConfs()
-  } catch (e) {
-    this.editError = e.response?.data?.error || "Erreur modification"
-  }
-}
-
+    openEdit(conf) {
+      this.editError = ""
+      this.editForm = {
+        ID: conf.ID || conf.id,
+        Title: conf.Title,
+        Description: conf.Description
+      }
+      this.modalEdit = true
+    },
+    closeEdit() {
+      this.modalEdit = false
+    },
+    async saveEdit() {
+      this.editError = ""
+      const token = localStorage.getItem('token')
+      try {
+        await axios.patch(`http://localhost:8080/conferences/${this.editForm.ID}`, {
+          Title: this.editForm.Title,
+          Description: this.editForm.Description
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        this.modalEdit = false
+        await this.loadConfs()
+      } catch (e) {
+        this.editError = e.response?.data?.error || "Erreur modification"
+      }
+    },
+    confirmDelete(conf) {
+      this.deleteTarget = conf
+      this.deleteError = ""
+      this.modalDelete = true
+    },
+    closeDelete() {
+      this.modalDelete = false
+    },
+    async doDelete() {
+      this.deleteError = ""
+      const token = localStorage.getItem('token')
+      try {
+        await axios.delete(`http://localhost:8080/conferences/${this.deleteTarget.ID || this.deleteTarget.id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        this.modalDelete = false
+        await this.loadConfs()
+      } catch (e) {
+        this.deleteError = e.response?.data?.error || "Erreur suppression"
+      }
+    }
   }
 }
 </script>
+
+
