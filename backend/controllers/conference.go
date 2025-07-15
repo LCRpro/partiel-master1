@@ -181,10 +181,7 @@ func ListConferenceParticipants(c *gin.Context) {
 	email := emailAny.(string)
 	var user models.User
 	config.DB.Where("email = ?", email).First(&user)
-	if conf.OrganizerID != user.ID {
-		c.JSON(403, gin.H{"error": "Accès refusé (pas organisateur de la conférence)"})
-		return
-	}
+
 
 	var inscs []models.UserConference
 	config.DB.Where("conference_id = ?", conf.ID).Find(&inscs)
