@@ -10,9 +10,7 @@ const routes = [
   {
     path: '/home',
     name: 'Home',
-    component: HomeView,
-    meta: { requiresAuth: true }
-  },
+    component: HomeView  },
   { path: '/me', name: 'Me', component: MeView, meta: { requiresAuth: true } }
 
 ]
@@ -25,7 +23,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   if (to.meta.requiresAuth && !token) {
-    next('/login')
+    next('/home')
   } else {
     next()
   }
