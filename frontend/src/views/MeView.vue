@@ -1,39 +1,60 @@
 <template>
-  <div>
-    <h1 class="text-2xl font-bold text-blue-300 mb-6">Mon profil</h1>
-    <div v-if="user" class="bg-gray-800 border border-gray-700 rounded-2xl shadow-xl px-8 py-8 max-w-lg">
-      <div class="flex items-center space-x-6 mb-4">
-        <img v-if="user.Picture || user.picture" :src="user.Picture || user.picture" class="rounded-full shadow-lg border-4 border-blue-500" width="90" height="90" alt="Avatar" />
+  <div class="flex flex-col items-center min-h-screen py-8 bg-gradient-to-b from-gray-900 to-gray-800">
+    <div v-if="user" class="bg-gray-800 border border-gray-700 rounded-3xl shadow-2xl px-10 py-10 max-w-xl w-full">
+      <div class="flex items-center gap-7 mb-6">
+        <img
+          v-if="user.Picture || user.picture"
+          :src="user.Picture || user.picture"
+          class="rounded-full shadow-lg border-4 border-blue-400 ring-4 ring-blue-800"
+          width="90"
+          height="90"
+          alt="Avatar"
+        />
         <div>
-          <div class="text-lg font-semibold">{{ user.Name || user.name }}</div>
-          <div class="text-blue-300 text-sm font-mono">{{ user.Email || user.email }}</div>
-          <div v-if="user.SpeakerName || user.speaker_name" class="text-green-400 text-xs font-mono mt-2">
-            Conférencier : <span class="font-bold">{{ user.SpeakerName || user.speaker_name }}</span>
+          <div class="flex items-center gap-2">
+            <span class="text-2xl font-bold text-white">{{ user.Name || user.name }}</span>
           </div>
-          <div class="text-sm text-gray-400 mt-2">
-            Rôles :
-            <span
-              class="ml-1 font-mono text-xs bg-blue-700 rounded px-2 py-1"
-              v-for="role in userRoles"
-              :key="role"
-            >{{ role }}</span>
+          <div class="text-blue-300 text-sm font-mono mt-1">{{ user.Email || user.email }}</div>
+          <div class="mt-3 text-sm flex flex-wrap gap-2 items-center">
+            <span class="font-bold text-gray-400">Rôles :</span>
+            <template v-for="role in userRoles" :key="role">
+              <span
+                v-if="role==='admin'"
+                class="bg-gradient-to-r from-red-600 to-red-700 text-white font-bold px-2.5 py-1 rounded shadow text-xs uppercase tracking-wide"
+              >admin</span>
+              <span
+                v-else-if="role==='conferencier'"
+                class="bg-gradient-to-r from-green-700 to-green-500 text-white font-bold px-2.5 py-1 rounded shadow text-xs uppercase tracking-wide"
+              >conférencier</span>
+              <span
+                v-else
+                class="bg-gradient-to-r from-blue-700 to-blue-500 text-white font-bold px-2 py-1 rounded shadow text-xs uppercase tracking-wide"
+              >{{ role }}</span>
+            </template>
+          </div>
+          <div
+            v-if="userRoles.includes('conferencier') && (user.SpeakerName || user.speaker_name)"
+            class="mt-2 text-green-300 text-xs font-mono flex items-center gap-1"
+          >
+            <span class="font-bold">Nom de conférencier :</span>
+            <span class="bg-green-900/70 px-2 py-0.5 rounded font-semibold tracking-wide">
+              {{ user.SpeakerName || user.speaker_name }}
+            </span>
           </div>
         </div>
       </div>
-      <div class="grid grid-cols-2 gap-2 mt-2 text-gray-300">
-        <div class="text-sm">ID (base) :</div>
-        <div class="text-sm font-mono text-white">{{ user.ID || user.id }}</div>
-        <div class="text-sm">Google ID :</div>
-        <div class="text-xs font-mono text-blue-300 break-all">{{ user.GoogleID || user.google_id }}</div>
+      <div class="grid grid-cols-2 gap-x-6 gap-y-2 mt-3 text-gray-400 text-[15px]">
+        <div>Google ID :</div>
+        <div class="font-mono text-blue-300 break-all">{{ user.GoogleID || user.google_id }}</div>
       </div>
       <div class="flex gap-4 mt-8">
         <button
           @click="openConfPopup"
-          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow"
+          class="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-5 py-2.5 rounded-xl font-semibold shadow transition"
         >Devenir conférencier</button>
         <button
           @click="openPopup('admin')"
-          class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow"
+          class="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-5 py-2.5 rounded-xl font-semibold shadow transition"
         >Devenir admin</button>
       </div>
     </div>
@@ -41,42 +62,37 @@
       <em>Chargement…</em>
     </div>
 
-
-<div v-if="myConfs.length" class="mt-12">
-  <h2 class="text-lg font-bold text-blue-300 mb-2">Programme personnalisé</h2>
-  <table class="w-full bg-gray-800 rounded-lg overflow-hidden shadow mb-4">
-    <thead>
-      <tr class="bg-gray-700 text-gray-200">
-        <th class="px-3 py-2">Titre</th>
-        <th class="px-3 py-2">Début</th>
-        <th class="px-3 py-2">Salle</th>
-        <th class="px-3 py-2">Conférencier</th>
-        <th class="px-3 py-2">Statut</th>
-        <th class="px-3 py-2">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="conf in myConfs" :key="conf.ID || conf.id">
-        <td class="px-3 py-2 text-white font-semibold">{{ conf.Title }}</td>
-        <td class="px-3 py-2 text-blue-300 font-mono">{{ dateFormat(conf.StartTime) }}</td>
-        <td class="px-3 py-2 text-blue-400 font-bold">{{ conf.Room }}</td>
-        <td class="px-3 py-2 text-gray-300">{{ conf.SpeakerName }}</td>
-        <td class="px-3 py-2">
-          <span v-if="isCreator(conf)" class="inline-block bg-green-700 text-white px-2 py-1 rounded text-xs font-semibold">Créateur</span>
-          <span v-else class="inline-block bg-gray-600 text-gray-200 px-2 py-1 rounded text-xs font-semibold">Visiteur</span>
-        </td>
-        <td class="px-3 py-2">
+    <div v-if="myConfs.length" class="mt-14 w-full max-w-3xl">
+      <h2 class="text-xl font-bold text-blue-300 mb-3 border-b-2 border-blue-800 pb-2 tracking-wide">Programme personnalisé</h2>
+      <div class="space-y-4">
+        <div v-for="conf in myConfs" :key="conf.ID || conf.id"
+          class="bg-gray-800/95 rounded-2xl px-7 py-5 shadow-md flex flex-col md:flex-row md:items-center gap-4 hover:shadow-blue-800/30 transition-shadow border border-blue-900/40">
+          <div class="flex-1 min-w-0">
+            <div class="flex gap-2 items-center mb-1">
+              <span class="text-lg font-bold text-white">{{ conf.Title }}</span>
+              <span
+                v-if="isCreator(conf)"
+                class="ml-2 bg-gradient-to-r from-green-700 to-green-500 text-white px-2 py-0.5 rounded font-semibold text-xs shadow"
+              >Créateur</span>
+              <span
+                v-else
+                class="ml-2 bg-gradient-to-r from-gray-700 to-gray-500 text-gray-200 px-2 py-0.5 rounded font-semibold text-xs"
+              >Visiteur</span>
+            </div>
+            <div class="text-blue-400 text-sm font-mono">
+              {{ dateFormat(conf.StartTime) }}
+              <span class="text-gray-400 font-sans mx-1">•</span>
+              Salle <b>{{ conf.Room }}</b>
+            </div>
+            <div class="text-gray-300 text-sm mt-1">Conférencier : <b>{{ conf.SpeakerName }}</b></div>
+          </div>
           <router-link
             :to="`/conferences/${conf.ID || conf.id}`"
-            class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs"
+            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow transition w-full md:w-auto text-center"
           >Détails</router-link>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-
+        </div>
+      </div>
+    </div>
 
     <div v-if="popup" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div class="bg-gray-800 p-8 rounded-2xl shadow-xl w-full max-w-xs text-center">
@@ -162,14 +178,14 @@ export default {
   },
   methods: {
     isCreator(conf) {
-    if (!this.user) return false
-    const userId = this.user.ID || this.user.id
-    const speakerName = this.user.SpeakerName || this.user.speaker_name
-    return (
-      (conf.OrganizerID === userId) ||
-      (speakerName && conf.SpeakerName === speakerName)
-    )
-  },
+      if (!this.user) return false
+      const userId = this.user.ID || this.user.id
+      const speakerName = this.user.SpeakerName || this.user.speaker_name
+      return (
+        (conf.OrganizerID === userId) ||
+        (speakerName && conf.SpeakerName === speakerName)
+      )
+    },
     openPopup(role) { this.popup = role },
     closePopup() { this.popup = null },
     openConfPopup() { this.confPopup = true; this.speakerName = "" },
@@ -206,4 +222,3 @@ export default {
   }
 }
 </script>
-
