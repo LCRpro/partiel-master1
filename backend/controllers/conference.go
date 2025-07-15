@@ -244,3 +244,31 @@ func UpdateConference(c *gin.Context) {
 }
 
 
+func DeleteConference(c *gin.Context) {
+    id := c.Param("id")
+
+    emailAny, exists := c.Get("email")
+    if !exists {
+        c.JSON(401, gin.H{"error": "Non authentifié"})
+        return
+    }
+    email := emailAny.(string)
+    var user models.User
+    config.DB.Where("email = ?", email).First(&user)
+
+    var conf models.Conference
+    result := config.DB.First(&conf, id)
+    if result.Error != nil {
+        c.JSON(404, gin.H{"error": "Conférence non trouvée"})
+        return
+    }
+    if conf.OrganizerID != user.ID {
+        c.JSON(403, gin.H{"error": "Seul l'organisateur peut supprimer"})
+        return
+    }
+
+    config.DB.Where("conference_id = ?", conf.ID).Delete(&models.UserConference{})
+    config.DB.Delete(&conf)
+
+    c.JSON(200, gin.H{"message": "Conférence supprimée"})
+}
