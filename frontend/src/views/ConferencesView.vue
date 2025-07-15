@@ -41,7 +41,6 @@
                 <th class="px-3 py-2">Début</th>
                 <th class="px-3 py-2">Fin</th>
                 <th class="px-3 py-2">Conférencier</th>
-                <th class="px-3 py-2">Participants</th>
                 <th class="px-3 py-2">Actions</th>
               </tr>
             </thead>
@@ -63,9 +62,7 @@
                 <td class="px-3 py-2">
                   <span :class="{ 'line-through text-gray-400': isPast(conf) }">{{ conf.SpeakerName }}</span>
                 </td>
-                <td class="px-3 py-2 text-yellow-400 font-mono">
-                  <span :class="{ 'line-through text-gray-400': isPast(conf) }">{{ conf.ParticipantCount || 0 }} / 20</span>
-                </td>
+             
                 <td class="px-3 py-2">
                   <router-link
                     :to="`/conferences/${conf.ID || conf.id}`"
