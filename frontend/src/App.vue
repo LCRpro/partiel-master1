@@ -6,10 +6,13 @@
           <span class="text-2xl font-bold text-blue-400 group-hover:text-blue-300 transition">NWS Conference</span>
         </router-link>
         <router-link
-          
           to="/home"
           class="hover:text-blue-400 font-medium px-3 py-1 rounded transition"
         >Accueil</router-link>
+        <router-link
+          to="/conferences"
+          class="hover:text-blue-400 font-medium px-3 py-1 rounded transition"
+        >Conférences</router-link>
         <router-link
           v-if="isLogged"
           to="/me"
