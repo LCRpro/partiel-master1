@@ -162,3 +162,40 @@ func ParseUint(s string) uint {
 	u, _ := strconv.ParseUint(s, 10, 64)
 	return uint(u)
 }
+
+func ListConferenceParticipants(c *gin.Context) {
+	id := c.Param("id")
+
+	var conf models.Conference
+	result := config.DB.First(&conf, id)
+	if result.Error != nil {
+		c.JSON(404, gin.H{"error": "Conférence non trouvée"})
+		return
+	}
+
+	emailAny, exists := c.Get("email")
+	if !exists {
+		c.JSON(401, gin.H{"error": "Non authentifié"})
+		return
+	}
+	email := emailAny.(string)
+	var user models.User
+	config.DB.Where("email = ?", email).First(&user)
+	if conf.OrganizerID != user.ID {
+		c.JSON(403, gin.H{"error": "Accès refusé (pas organisateur de la conférence)"})
+		return
+	}
+
+	var inscs []models.UserConference
+	config.DB.Where("conference_id = ?", conf.ID).Find(&inscs)
+	var userIDs []uint
+	for _, i := range inscs {
+		userIDs = append(userIDs, i.UserID)
+	}
+	var users []models.User
+	if len(userIDs) > 0 {
+		config.DB.Select("id, name, email").Where("id IN ?", userIDs).Find(&users)
+	}
+
+	c.JSON(200, users)
+}

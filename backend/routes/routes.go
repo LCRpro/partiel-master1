@@ -20,4 +20,6 @@ func SetupRoutes(r *gin.Engine) {
 	secured.GET("/conferences", controllers.ListConferences)
 	secured.POST("/conferences/:id/join", controllers.JoinConference)
 	secured.GET("/me/conferences", controllers.ListMyConferences)
+	secured.GET("/conferences/:id/participants", controllers.ListConferenceParticipants)
+
 }
