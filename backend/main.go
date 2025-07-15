@@ -1,30 +1,29 @@
 package main
 
 import (
-	"log"
 	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 
-	"github.com/LCRpro/partiel-master1/config"
-	"github.com/LCRpro/partiel-master1/routes"
+	"partiel-master1/config"
+	"partiel-master1/models"
+	"partiel-master1/routes"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Erreur de chargement du .env")
-	}
-
+	godotenv.Load()
 	config.InitOAuth()
+	config.InitDB()
 
-	router := gin.Default()
-	routes.SetupRoutes(router)
+	models.Migrate(config.DB) 
+
+	r := gin.Default()
+	routes.SetupRoutes(r)
 
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
-	router.Run(":" + port)
+	r.Run(":" + port)
 }
