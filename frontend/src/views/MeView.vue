@@ -41,6 +41,43 @@
       <em>Chargement…</em>
     </div>
 
+
+<div v-if="myConfs.length" class="mt-12">
+  <h2 class="text-lg font-bold text-blue-300 mb-2">Programme personnalisé</h2>
+  <table class="w-full bg-gray-800 rounded-lg overflow-hidden shadow mb-4">
+    <thead>
+      <tr class="bg-gray-700 text-gray-200">
+        <th class="px-3 py-2">Titre</th>
+        <th class="px-3 py-2">Début</th>
+        <th class="px-3 py-2">Salle</th>
+        <th class="px-3 py-2">Conférencier</th>
+        <th class="px-3 py-2">Statut</th>
+        <th class="px-3 py-2">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="conf in myConfs" :key="conf.ID || conf.id">
+        <td class="px-3 py-2 text-white font-semibold">{{ conf.Title }}</td>
+        <td class="px-3 py-2 text-blue-300 font-mono">{{ dateFormat(conf.StartTime) }}</td>
+        <td class="px-3 py-2 text-blue-400 font-bold">{{ conf.Room }}</td>
+        <td class="px-3 py-2 text-gray-300">{{ conf.SpeakerName }}</td>
+        <td class="px-3 py-2">
+          <span v-if="isCreator(conf)" class="inline-block bg-green-700 text-white px-2 py-1 rounded text-xs font-semibold">Créateur</span>
+          <span v-else class="inline-block bg-gray-600 text-gray-200 px-2 py-1 rounded text-xs font-semibold">Visiteur</span>
+        </td>
+        <td class="px-3 py-2">
+          <router-link
+            :to="`/conferences/${conf.ID || conf.id}`"
+            class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs"
+          >Détails</router-link>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
     <div v-if="popup" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div class="bg-gray-800 p-8 rounded-2xl shadow-xl w-full max-w-xs text-center">
         <div class="mb-4 text-lg text-white">
@@ -78,7 +115,8 @@ export default {
       user: null,
       popup: null,
       confPopup: false,
-      speakerName: ""
+      speakerName: "",
+      myConfs: []
     }
   },
   computed: {
@@ -97,49 +135,75 @@ export default {
       headers: { Authorization: `Bearer ${token}` }
     })
     this.user = res.data
+
+    const [allRes, joinedRes] = await Promise.all([
+      axios.get('http://localhost:8080/conferences', { headers: { Authorization: `Bearer ${token}` } }),
+      axios.get('http://localhost:8080/me/conferences', { headers: { Authorization: `Bearer ${token}` } })
+    ])
+
+    const joined = joinedRes.data || []
+    const all = allRes.data || []
+    const userId = this.user.ID || this.user.id
+    const speakerName = this.user.SpeakerName || this.user.speaker_name
+
+    const mine = all.filter(
+      conf =>
+        (conf.OrganizerID === userId) ||
+        (speakerName && conf.SpeakerName === speakerName)
+    )
+
+    const merged = [...joined]
+    mine.forEach(c => {
+      if (!merged.find(j => (j.ID || j.id) === (c.ID || c.id))) {
+        merged.push(c)
+      }
+    })
+    this.myConfs = merged
   },
   methods: {
+    isCreator(conf) {
+    if (!this.user) return false
+    const userId = this.user.ID || this.user.id
+    const speakerName = this.user.SpeakerName || this.user.speaker_name
+    return (
+      (conf.OrganizerID === userId) ||
+      (speakerName && conf.SpeakerName === speakerName)
+    )
+  },
     openPopup(role) { this.popup = role },
     closePopup() { this.popup = null },
     openConfPopup() { this.confPopup = true; this.speakerName = "" },
     closeConfPopup() { this.confPopup = false },
-   async becomeSpeaker() {
-  if (!this.speakerName) return
-  const token = localStorage.getItem('token')
-  const res = await axios.post('http://localhost:8080/me/role', {
-    role: "conferencier",
-    speakerName: this.speakerName
-  }, {
-    headers: { Authorization: `Bearer ${token}` }
-  })
-  this.user = res.data.user
-  localStorage.setItem('token', res.data.token)
-  localStorage.setItem('user', JSON.stringify(res.data.user))
-  this.closeConfPopup()
-},
-
-async updateRole() {
-  const token = localStorage.getItem('token')
-  const res = await axios.post('http://localhost:8080/me/role', { role: this.popup }, {
-    headers: { Authorization: `Bearer ${token}` }
-  })
-  this.user = res.data.user
-  localStorage.setItem('token', res.data.token)
-  localStorage.setItem('user', JSON.stringify(res.data.user))
-  this.closePopup()
-}
-,
+    async becomeSpeaker() {
+      if (!this.speakerName) return
+      const token = localStorage.getItem('token')
+      const res = await axios.post('http://localhost:8080/me/role', {
+        role: "conferencier",
+        speakerName: this.speakerName
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      this.user = res.data.user
+      localStorage.setItem('token', res.data.token)
+      localStorage.setItem('user', JSON.stringify(res.data.user))
+      this.closeConfPopup()
+    },
     async updateRole() {
       const token = localStorage.getItem('token')
-      await axios.post('http://localhost:8080/me/role', { role: this.popup }, {
+      const res = await axios.post('http://localhost:8080/me/role', { role: this.popup }, {
         headers: { Authorization: `Bearer ${token}` }
       })
-      const res = await axios.get('http://localhost:8080/me', {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      this.user = res.data
+      this.user = res.data.user
+      localStorage.setItem('token', res.data.token)
+      localStorage.setItem('user', JSON.stringify(res.data.user))
       this.closePopup()
+    },
+    dateFormat(dt) {
+      if (!dt) return ""
+      const d = new Date(dt.replace(" ", "T"))
+      return d.toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' })
     }
   }
 }
 </script>
+
