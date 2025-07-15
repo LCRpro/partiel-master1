@@ -13,8 +13,10 @@ const routes = [
     name: 'Home',
     component: HomeView  },
   { path: '/me', name: 'Me', component: MeView, meta: { requiresAuth: true } },
-  { path: '/conferences', name: 'Conferences', component: ConferencesView },
-  { path: '/conferences/:id', name: 'ConferenceDetail', component: ConferenceDetailView, props: true },
+  { path: '/conferences', name: 'Conferences', component: ConferencesView, meta: { requiresAuth: true } },
+  { path: '/conferences/:id', name: 'ConferenceDetail', component: ConferenceDetailView, props: true, meta: { requiresAuth: true } },
+    { path: '/mes=conferences', name: 'ConferenceDetail', component: MesConferenceView, meta: { requiresAuth: true } },
+
 ]
 
 const router = createRouter({
