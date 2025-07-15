@@ -199,3 +199,48 @@ func ListConferenceParticipants(c *gin.Context) {
 
 	c.JSON(200, users)
 }
+
+func UpdateConference(c *gin.Context) {
+    id := c.Param("id")
+
+    emailAny, exists := c.Get("email")
+    if !exists {
+        c.JSON(401, gin.H{"error": "Non authentifié"})
+        return
+    }
+    email := emailAny.(string)
+    var user models.User
+    config.DB.Where("email = ?", email).First(&user)
+
+    var conf models.Conference
+    result := config.DB.First(&conf, id)
+    if result.Error != nil {
+        c.JSON(404, gin.H{"error": "Conférence non trouvée"})
+        return
+    }
+    if conf.OrganizerID != user.ID {
+        c.JSON(403, gin.H{"error": "Seul l'organisateur peut modifier"})
+        return
+    }
+
+    var req struct {
+        Title       *string `json:"Title"`
+        Description *string `json:"Description"`
+    }
+    if err := c.ShouldBindJSON(&req); err != nil {
+        c.JSON(400, gin.H{"error": "Données invalides"})
+        return
+    }
+
+    if req.Title != nil {
+        conf.Title = *req.Title
+    }
+    if req.Description != nil {
+        conf.Description = *req.Description
+    }
+
+    config.DB.Save(&conf)
+    c.JSON(200, conf)
+}
+
+
