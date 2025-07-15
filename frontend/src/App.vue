@@ -25,7 +25,14 @@
           to="/me"
           class="hover:text-blue-400 font-medium px-3 py-1 rounded transition"
         >Mon Profil</router-link>
+              <router-link
+  v-if="isLogged && isAdmin"
+  to="/admin"
+  class="hover:text-blue-400 font-medium px-3 py-1 rounded transition"
+>Admin</router-link>
       </div>
+
+
       <div>
         <button
           v-if="!isLogged"
@@ -55,6 +62,16 @@ const isLogged = computed(() => !!localStorage.getItem('token'))
 function loginWithGoogle() {
   window.location.href = 'http://localhost:8080/auth/google/login'
 }
+const isAdmin = computed(() => {
+  if (!localStorage.getItem('user')) return false
+  try {
+    const user = JSON.parse(localStorage.getItem('user'))
+    const roles = JSON.parse(user.Roles)
+    return roles.includes("admin")
+  } catch {
+    return false
+  }
+})
 
 function logout() {
   localStorage.clear()
