@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import MeView from '../views/MeView.vue'
 import ConferencesView from '../views/ConferencesView.vue'
 import ConferenceDetailView from '../views/ConferenceDetailView.vue'
+import MesConferencesView from '../views/MesConferencesView.vue'
 
 const routes = [
   { path: '/', redirect: '/home' },
@@ -15,7 +16,7 @@ const routes = [
   { path: '/me', name: 'Me', component: MeView, meta: { requiresAuth: true } },
   { path: '/conferences', name: 'Conferences', component: ConferencesView, meta: { requiresAuth: true } },
   { path: '/conferences/:id', name: 'ConferenceDetail', component: ConferenceDetailView, props: true, meta: { requiresAuth: true } },
-    { path: '/mes=conferences', name: 'ConferenceDetail', component: MesConferenceView, meta: { requiresAuth: true } },
+  { path: '/mes-conferences', name: 'MesConferences', component: MesConferencesView, meta: { requiresAuth: true } },
 
 ]
 
