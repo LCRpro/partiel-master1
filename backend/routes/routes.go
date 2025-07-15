@@ -22,6 +22,7 @@ func SetupRoutes(r *gin.Engine) {
 	secured.GET("/me/conferences", controllers.ListMyConferences)
 	secured.GET("/conferences/:id/participants", controllers.ListConferenceParticipants)
 	secured.PATCH("/conferences/:id", controllers.UpdateConference)
+	secured.DELETE("/conferences/:id", controllers.DeleteConference)
 
 
 }
